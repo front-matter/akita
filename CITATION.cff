@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+message: If you use Frontend for the DataCite Commons service in your work, please
+  cite it using the following metadata
+doi: https://doi.org/10.14454/qgk4-zs88
+repository-code: https://github.com/datacite/akita
+title: Frontend for the DataCite Commons service
+authors:
+- given-names: Martin
+  family-names: Fenner
+  orcid: https://orcid.org/0000-0003-1419-2405
+  affiliation: DataCite
+- given-names: Richard
+  family-names: Hallett
+  orcid: https://orcid.org/0000-0002-8599-0773
+  affiliation: DataCite
+- given-names: Kristian
+  family-names: Garza
+  orcid: https://orcid.org/0000-0003-3484-6875
+  affiliation: DataCite
+- given-names: Sarala
+  family-names: Wimalaratne
+  orcid: https://orcid.org/0000-0002-5355-2576
+  affiliation: DataCite
+abstract: The web frontend for the DataCite Commons discovery service.
+version: 1.0.4
+keywords:
+- PID Graph
+- GraphQL
+- DOI
+- ORCID
+- ROR
+- PID
+- 'FOS: Computer and information sciences'
+date-released: '2020-10-18'
+license: mit
