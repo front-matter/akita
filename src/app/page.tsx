@@ -1,9 +1,8 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 import Link from 'next/link'
 
 import ExampleText from 'src/components/ExampleText/ExampleText'
-import Loading from 'src/components/Loading/Loading'
-import SearchWork from 'src/components/SearchWork/Server'
+import SearchWork from 'src/components/SearchWork/SearchWork'
 import { QueryVar } from 'src/data/queries/searchDoiQuery'
 
 interface Props {
@@ -37,7 +36,5 @@ export default async function IndexPage ({ searchParams }: Props) {
 
   const queryStatement = query + (filterQuery ? ' AND ' + filterQuery : '')
 
-  return <Suspense fallback={<Loading />}>
-    <SearchWork variables={{ query: queryStatement, ...vars }} />
-  </Suspense>
+  return <SearchWork variables={{ query: queryStatement, ...vars }} />
 }

@@ -1,6 +1,5 @@
 import React, { PropsWithChildren, Suspense } from "react";
 import { Metadata } from 'next'
-import { cookies } from 'next/headers'
 import PlausibleProvider from 'next-plausible'
 import { Source_Sans_3 } from 'next/font/google';
 import * as Sentry from '@sentry/node'
@@ -14,8 +13,8 @@ import '@fortawesome/fontawesome-svg-core/styles.css' // Import the CSS
 import Header from "./Header";
 import Consent from "./Consent";
 import Footer from "./Footer";
-import session from "../utils/server/session";
 import Providers from "./Providers";
+import { getAuthToken } from "src/utils/apolloClient/apolloClient";
 
 
 config.autoAddCss = false
@@ -29,7 +28,7 @@ if (typeof process.env.SENTRY_DSN !== 'undefined') {
 
 export const metadata: Metadata = {
   title: 'DataCite Commons',
-  
+
 }
 
 const sourceSans3 = Source_Sans_3({
@@ -40,7 +39,7 @@ const sourceSans3 = Source_Sans_3({
 
 export default async function RootLayout({ children }: PropsWithChildren) {
   const data = GetData()
-  
+
   return (
     <html lang="en" className={sourceSans3.className}>
       <head>
@@ -54,10 +53,10 @@ export default async function RootLayout({ children }: PropsWithChildren) {
       </head>
       <body>
         <Providers default_features={data.DEFAULT_FEATURES} apolloUrl={data.apolloUrl} authToken={data.authToken} >
-          <Header profilesUrl={data.profilesUrl} orcidUrl={data.orcidUrl} user={data.user} />
+          <Header profilesUrl={data.profilesUrl} orcidUrl={data.orcidUrl} />
           <div className="container-fluid">{children}</div>
           <Consent domain={data.domain} />
-          <Footer  />
+          <Footer />
         </Providers>
       </body>
     </html>
@@ -65,17 +64,17 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 }
 
 
-function GetData () {
+function GetData() {
   // Construct feature flags based on query param, we have to wrap into array as
   // the query string can parse into string || string[]
   // Use like ?features=feature1&?features=feature2
   const DEFAULT_FEATURES = process.env.NEXT_PUBLIC_FEATURE_FLAGS
     ? process.env.NEXT_PUBLIC_FEATURE_FLAGS.split(",")
     : []
-  
+
   const apolloUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.stage.datacite.org'
 
-  const authToken = cookies().get('_datacite')?.value
+  const authToken = getAuthToken()
 
 
   const profilesUrl =
@@ -108,7 +107,5 @@ function GetData () {
   }
 
 
-  const user = session()
-
-  return { DEFAULT_FEATURES, apolloUrl, authToken, profilesUrl, orcidUrl, domain, user }
+  return { DEFAULT_FEATURES, apolloUrl, authToken, profilesUrl, orcidUrl, domain }
 }

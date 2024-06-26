@@ -1,5 +1,5 @@
 // DOI types
-export type Metadata = {
+export type WorkMetadata = {
   id: string
   doi: string
   types: {
@@ -16,7 +16,7 @@ export type Metadata = {
   schemaOrg: string
 }
 
-export type Work = Metadata & {
+export type Work = WorkMetadata & {
   url: string
   identifiers?: Identifier[]
   contentUrl: string
@@ -81,12 +81,6 @@ type Title = {
 
 type Description = {
   description: string
-}
-
-type Identifier = {
-  identifier: string
-  identifierType: string
-  identifierUrl: string
 }
 
 type Publisher = {
@@ -161,17 +155,196 @@ type UsageMonth = {
 
 
 
+// Organization types
+export type OrganizationMetadata = {
+  name: string
+}
+
+export type Organization = OrganizationMetadata & {
+  id: string
+  memberId: string
+  memberRoleId: string
+  alternateName: string[]
+  inceptionYear: number
+  types: string[]
+  url: string
+  wikipediaUrl: string
+  twitter: string
+  citationCount: number
+  viewCount: number
+  downloadCount: number
+  geolocation: Geolocation
+  country: Country
+  identifiers: OrganizationIdentifier[]
+  works: Works
+}
+
+
+export type Organizations = {
+  totalCount: number
+  pageInfo: PageInfo
+  types: Facet[]
+  countries: Facet[]
+  nodes: Organization[]
+}
+
+
+
+type Geolocation = {
+  pointLongitude: number
+  pointLatitude: number
+}
+
+type OrganizationIdentifier = {
+  identifier: string
+  identifierType: string
+}
+
+
+
+// People types
+export type PersonMetadata = {
+  id: string
+  name: string
+  description: string
+}
+
+export interface Person extends PersonMetadata {
+  links: Link[]
+  identifiers: Identifier[]
+  country: Country
+  givenName: string
+  familyName: string
+  alternateName: string[]
+  citationCount: number
+  viewCount: number
+  downloadCount: number
+  employment: EmploymentRecord[]
+  pageInfo: PageInfo
+  totalWorks: PersonWorks
+  works: PersonWorks
+}
+
+
+export interface People {
+  __typename: String
+  totalCount: number
+  pageInfo: PageInfo
+  nodes: Person[]
+}
+
+
+interface Link {
+  name: string
+  url: string
+}
+
+export interface EmploymentRecord {
+  organizationId: string
+  organizationName: string
+  roleTitle: string
+  startDate: Date
+  endDate: Date
+}
+
+interface PersonWorks extends Works {
+  totalContentUrl: number
+  totalOpenLicenses: number
+  openLicenseResourceTypes: Facet[]
+}
+
+
+
+// Repository types
+export type RepositoryMetadata = {
+  id: string
+  name: string
+  re3dataDoi: string
+}
+
+export type Repository = RepositoryMetadata & {
+  clientId: string
+  name: string
+  language: string[]
+  description: string
+  type: string
+  repositoryType: string[]
+  url: string
+  keyword: string[]
+  subject: DefinedTerm[]
+
+  citationCount: number
+  downloadCount: number
+  viewCount: number
+  works: RepositoryWorks
+  contact: string[]
+  pidSystem: string[]
+  providerType: string[]
+  dataUpload: TextRestriction[]
+  dataAccess: TextRestriction[]
+  certificate: string[]
+}
+
+export interface Repositories {
+  totalCount: number
+  pageInfo: PageInfo
+  certificates: [RepositoryFacet]
+  software: [RepositoryFacet]
+  nodes: Repository[]
+}
+
+
+
+interface RepositoryWorks {
+  totalCount: number
+  languages: Facet[]
+  resourceTypes: Facet[]
+  fieldsOfScience: Facet[]
+  authors: Facet[]
+  licenses: Facet[]
+  published: Facet[]
+}
+
+
+
+interface RepositoryFacet extends Facet {
+  name: string
+}
+
+interface TextRestriction {
+  type: string
+}
+
+type DefinedTerm = {
+  name: string
+}
+
+
+
+
+// Shared types
+type Identifier = {
+  identifier: string
+  identifierType: string
+  identifierUrl: string
+}
+
 export type Facet = {
   id: string
   title: string
   count: number
 }
 
-type MultilevelFacet = Facet & {
+export type MultilevelFacet = Facet & {
   inner: Facet[]
 }
 
-type PageInfo = {
+type Country = {
+  id: string
+  name: string
+}
+
+export type PageInfo = {
   endCursor: string
   hasNextPage: boolean
 }
