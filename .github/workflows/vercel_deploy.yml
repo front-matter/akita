@@ -38,9 +38,9 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "${{ inputs.production }}" == "true" ]]; then
-            DEPLOYMENT_URL=$(vercel deploy --prod --scope="$TEAM_ID" --yes)
+            DEPLOYMENT_URL=$(vercel deploy --prod --token="$VERCEL_TOKEN" --scope="$TEAM_ID" --yes)
           else
-            DEPLOYMENT_URL=$(vercel deploy --scope="$TEAM_ID" --yes)
+            DEPLOYMENT_URL=$(vercel deploy --token="$VERCEL_TOKEN" --scope="$TEAM_ID" --yes)
           fi
           echo "deployment_url=$DEPLOYMENT_URL" >> "$GITHUB_OUTPUT"
 
@@ -55,6 +55,6 @@ jobs:
           set -euo pipefail
           while IFS= read -r alias; do
             if [[ -n "$alias" ]]; then
-              vercel alias set "$DEPLOYMENT_URL" "$alias" --scope="$TEAM_ID"
+              vercel alias set "$DEPLOYMENT_URL" "$alias" --token="$VERCEL_TOKEN" --scope="$TEAM_ID"
             fi
           done <<< "$ALIASES"
