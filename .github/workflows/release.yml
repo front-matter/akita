@@ -8,16 +8,7 @@ jobs:
     secrets: inherit
   release:
     needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Vercel deploy
-        uses: amondnet/vercel-action@v25.2.0
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.ORG_ID}}
-          vercel-project-id: ${{ secrets.PROJECT_ID}}
-          vercel-args: '--prod'
-          scope: ${{ secrets.TEAM_ID}}
-          vercel-project-name: 'akita'
+    uses: ./.github/workflows/vercel_deploy.yml
+    with:
+      production: true
+    secrets: inherit
