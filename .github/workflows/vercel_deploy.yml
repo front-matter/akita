@@ -28,7 +28,7 @@ jobs:
 
       - name: Install Vercel CLI
         env:
-          VERCEL_CLI_VERSION: ">=47.2.2 <48"
+          VERCEL_CLI_VERSION: "latest"
         run: npm i -g "vercel@${VERCEL_CLI_VERSION}"
 
       - name: Vercel deploy
