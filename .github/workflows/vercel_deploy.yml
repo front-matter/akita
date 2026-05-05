@@ -1,0 +1,72 @@
+name: Vercel Deploy (Reusable)
+on:
+  workflow_call:
+    inputs:
+      production:
+        required: false
+        type: boolean
+        default: false
+      aliases:
+        required: false
+        type: string
+        default: ""
+    secrets:
+      VERCEL_TOKEN:
+        required: true
+      ORG_ID:
+        required: true
+      PROJECT_ID:
+        required: true
+      TEAM_ID:
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Install Vercel CLI
+        env:
+          VERCEL_CLI_VERSION: "latest"
+        run: npm i -g "vercel@${VERCEL_CLI_VERSION}"
+
+      - name: Vercel deploy
+        id: vercel_deploy
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          TEAM_ID: ${{ secrets.TEAM_ID }}
+        run: |
+          set -euo pipefail
+          if [[ "${{ inputs.production }}" == "true" ]]; then
+            DEPLOYMENT_URL=$(vercel deploy --prod --token="$VERCEL_TOKEN" --scope="$TEAM_ID" --yes)
+          else
+            DEPLOYMENT_URL=$(vercel deploy --token="$VERCEL_TOKEN" --scope="$TEAM_ID" --yes)
+          fi
+          echo "deployment_url=$DEPLOYMENT_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Set aliases
+        if: ${{ inputs.aliases != '' }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          TEAM_ID: ${{ secrets.TEAM_ID }}
+          DEPLOYMENT_URL: ${{ steps.vercel_deploy.outputs.deployment_url }}
+          ALIASES: ${{ inputs.aliases }}
+        run: |
+          set -euo pipefail
+          while IFS= read -r alias; do
+            if [[ -n "$alias" ]]; then
+              vercel alias set "$DEPLOYMENT_URL" "$alias" --token="$VERCEL_TOKEN" --scope="$TEAM_ID"
+            fi
+          done <<< "$ALIASES"
