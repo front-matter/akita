@@ -10,6 +10,15 @@ on:
         required: false
         type: string
         default: ""
+    secrets:
+      VERCEL_TOKEN:
+        required: true
+      ORG_ID:
+        required: true
+      PROJECT_ID:
+        required: true
+      TEAM_ID:
+        required: true
 
 permissions:
   contents: read
